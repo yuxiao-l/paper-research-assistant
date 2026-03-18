@@ -9,7 +9,7 @@
 ## Features
 
 - 自动生成研究任务对应的检索关键词
-- 基于 OpenAlex 与 arXiv 检索论文标题、摘要和元信息
+- 基于 arXiv 检索论文标题、摘要和元信息
 - 对候选论文进行启发式排序与 LLM 重排
 - 自动抽取标准信息卡
 - 自动生成综述与对比表
@@ -21,7 +21,6 @@
 
 - Python
 - Streamlit
-- OpenAlex API
 - arXiv API
 - OpenAI-compatible LLM API
 - `pypdf` for PDF text extraction
@@ -64,17 +63,16 @@ pip install -r requirements.txt
 复制 `.env.example` 为 `.env`，并填写配置：
 
 ```env
-OPENAI_API_KEY=your_api_key
-OPENAI_BASE_URL=https://api.deepseek.com/v1
-OPENAI_MODEL=deepseek-chat
-OPENALEX_EMAIL=your_email@example.com
+OPENAI_API_KEY=
+OPENAI_BASE_URL=
+OPENAI_MODEL=
+OPENALEX_EMAIL=
 ```
 
 说明：
 
 - `OPENAI_API_KEY` / `OPENAI_BASE_URL` / `OPENAI_MODEL` 支持 OpenAI 兼容接口
-- 使用 DeepSeek 时，上面的默认示例可以直接套用
-- `OPENALEX_EMAIL` 不是必填，但建议填写
+- `OPENALEX_EMAIL` 不是必填
 
 ### 3. Run in CLI
 
@@ -100,9 +98,9 @@ streamlit run streamlit_app.py
 Web 界面支持：
 
 - 配置调研参数
-- 查看折叠式调研过程
+- 查看调研过程
 - 查看综述与对比表
-- 查看每篇入选论文的摘要、PDF 全文摘录和标准信息卡
+- 查看每篇入选论文的摘要
 
 ## Output
 
@@ -123,27 +121,6 @@ Web 界面支持：
 4. 将摘录纳入信息卡和综述生成
 
 如果某篇论文没有可用 PDF，或 PDF 无法解析，系统不会中断整次调研，而是退回为基于标题和摘要生成对应结果。
-
-## Tests
-
-```bash
-python -m unittest discover -s tests
-```
-
-`tests/` 目录建议保留。即使测试数量不多，它仍然能帮助他人快速验证项目是否可运行，也更符合 GitHub 上开源项目的基本工程化习惯。
-
-## Notes
-
-- 请不要提交 `.env`
-- `outputs/` 为运行产物，建议不要提交到 GitHub
-- 如果你使用的是国内可访问的 OpenAI 兼容服务，优先在 `.env` 中配置 `OPENAI_BASE_URL`
-
-## Roadmap
-
-- 支持更多论文检索源
-- 支持更稳健的 PDF 结构化解析
-- 支持导出 BibTeX / CSV
-- 支持更丰富的综述模板
 
 ## License
 
