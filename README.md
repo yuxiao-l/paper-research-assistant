@@ -4,7 +4,7 @@
 [![Streamlit](https://img.shields.io/badge/UI-Streamlit-red)](https://streamlit.io/)
 [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-一个面向论文调研场景的单 Agent 助手。输入研究任务后，系统会自动生成检索关键词，检索论文标题与摘要，筛选候选论文，抽取标准信息卡，并生成简要综述与对比表；对于可获取 PDF 的论文，还会进一步解析全文摘录，提升信息提取质量。
+一个论文调研场景的 Agent 助手。输入研究任务后，系统会自动生成检索关键词，检索论文标题与摘要，筛选候选论文，抽取标准信息卡，并生成简要综述与对比表；对于可获取 PDF 的论文，还会进一步解析全文摘录，提升信息提取质量。
 
 ## Features
 

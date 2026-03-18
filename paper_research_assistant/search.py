@@ -194,7 +194,7 @@ def search_papers(
             _search_provider(
                 "arXiv",
                 keyword,
-                lambda: search_arxiv(keyword, max(3, per_keyword // 2)),
+                lambda: search_arxiv(keyword, max(3, per_keyword)),
                 progress_callback,
                 current=index,
                 total=total_keywords,

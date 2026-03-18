@@ -95,12 +95,12 @@ with st.sidebar:
         "最多生成关键词数",
         min_value=1,
         max_value=12,
-        value=6,
+        value=8,
         key="max_keywords",
         disabled=controls_disabled,
     )
     per_keyword = st.slider(
-        "每个关键词检索论文数",
+        "每个检索源检索论文数",
         min_value=3,
         max_value=15,
         value=8,
