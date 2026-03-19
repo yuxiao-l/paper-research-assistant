@@ -112,18 +112,3 @@ Web 界面支持：
 - `report.md`
 
 其中 `result.json` 会保留检索结果、入选论文、信息卡、综述，以及 `pdf_url`、`full_text_excerpt` 等字段。
-
-## PDF Full-Text Parsing
-
-当论文提供可访问的 PDF 链接时，系统会：
-
-1. 下载 PDF
-2. 解析前若干页文本
-3. 提取全文摘录
-4. 将摘录纳入信息卡和综述生成
-
-如果某篇论文没有可用 PDF，或 PDF 无法解析，系统不会中断整次调研，而是退回为基于标题和摘要生成对应结果。
-
-## License
-
-MIT License. See [LICENSE](LICENSE).
