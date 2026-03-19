@@ -76,8 +76,12 @@ def run_research(
             cards.append(build_card(paper, task=task, llm=llm))
 
         _report(progress_callback, "overview", "生成综述与对比表")
-        overview = generate_overview(task, cards=cards, llm=llm, target_words=overview_words)
+        overview = generate_overview(task, cards=cards, papers=selected, llm=llm, target_words=overview_words)
         comparison_table = build_comparison_table(cards)
+
+        for paper in selected:
+            paper.full_text = None
+            paper.full_text_excerpt = None
 
         result = ResearchResult(
             task=task,

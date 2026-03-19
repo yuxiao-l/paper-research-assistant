@@ -74,6 +74,17 @@ class PipelineTests(unittest.TestCase):
         self.assertIn("iterative decomposition", card.method)
         self.assertIn("The full paper describes", llm.last_prompt)
 
+    def test_paper_to_dict_excludes_full_text_fields(self):
+        paper = Paper(
+            title="PDF Paper",
+            abstract="abstract",
+            full_text="full text body",
+            full_text_excerpt="excerpt",
+        )
+        payload = paper.to_dict()
+        self.assertNotIn("full_text", payload)
+        self.assertNotIn("full_text_excerpt", payload)
+
     def test_llm_without_api_key_raises(self):
         llm = LLMClient(
             Settings(

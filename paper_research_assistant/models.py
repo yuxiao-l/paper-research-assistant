@@ -24,7 +24,10 @@ class Paper:
     full_text_excerpt: str | None = None
 
     def to_dict(self) -> dict[str, Any]:
-        return asdict(self)
+        payload = asdict(self)
+        payload.pop("full_text", None)
+        payload.pop("full_text_excerpt", None)
+        return payload
 
 
 @dataclass

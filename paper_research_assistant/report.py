@@ -5,21 +5,46 @@ from datetime import datetime
 from pathlib import Path
 
 from paper_research_assistant.llm import LLMClient
-from paper_research_assistant.models import PaperCard, ResearchResult
+from paper_research_assistant.models import Paper, PaperCard, ResearchResult
 
 
-def generate_overview(task: str, cards: list[PaperCard], llm: LLMClient, target_words: int = 300) -> str:
+def _build_overview_evidence(papers: list[Paper]) -> list[dict[str, str | int | None]]:
+    evidence: list[dict[str, str | int | None]] = []
+    for paper in papers:
+        evidence.append(
+            {
+                "title": paper.title,
+                "year": paper.year,
+                "venue": paper.venue,
+                "url": paper.url,
+                "source": paper.source,
+                "abstract": paper.abstract,
+                # Use parsed full text for overview generation, but trim before sending to the model.
+                "full_text_for_overview": (paper.full_text or "")[:12000] if paper.full_text else "",
+            }
+        )
+    return evidence
+
+
+def generate_overview(
+    task: str,
+    cards: list[PaperCard],
+    papers: list[Paper],
+    llm: LLMClient,
+    target_words: int = 300,
+) -> str:
     lower_bound = max(80, int(target_words * 0.8))
     upper_bound = max(lower_bound, int(target_words * 1.2))
     prompt = f"""
 You are writing a concise literature review overview.
-Based on the paper cards below, write an overview for the following research task.
+Based on the paper cards and paper evidence below, write an overview for the following research task.
 
 Requirements:
 - Target length: about {target_words} Chinese characters, ideally within {lower_bound}-{upper_bound}.
 - Summarize the main research threads and key differences across papers.
 - Point out promising directions for deeper reading.
-- Respect the evidence scope in each paper card. Some cards are based on title/abstract only, while others also use PDF full text excerpts.
+- Prefer parsed PDF full text evidence when it is available.
+- If a paper has no parsed PDF text, fall back to its title and abstract.
 - Start directly with the overview content.
 
 Research task:
@@ -27,6 +52,9 @@ Research task:
 
 Paper cards:
 {json.dumps([card.to_dict() for card in cards], ensure_ascii=False)}
+
+Paper evidence:
+{json.dumps(_build_overview_evidence(papers), ensure_ascii=False)}
 """.strip()
     return llm.text_response(prompt)
 
@@ -86,7 +114,6 @@ def save_result(result: ResearchResult, output_dir: str = "outputs") -> tuple[Pa
                 f"- Reason: {paper.reason}",
                 f"- URL: {paper.url or 'N/A'}",
                 f"- PDF URL: {paper.pdf_url or 'N/A'}",
-                f"- Full Text Extracted: {'Yes' if paper.full_text_excerpt else 'No'}",
                 "",
             ]
         )
