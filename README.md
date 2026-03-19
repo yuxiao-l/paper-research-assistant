@@ -111,4 +111,4 @@ Web 界面支持：
 - `result.json`
 - `report.md`
 
-其中 `result.json` 会保留检索结果、入选论文、信息卡、综述，以及 `pdf_url`、`full_text_excerpt` 等字段。
+其中 `result.json` 会保留检索结果、入选论文、信息卡以及综述等字段。
