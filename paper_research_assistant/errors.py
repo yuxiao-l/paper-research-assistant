@@ -33,3 +33,7 @@ class EmptySearchResultError(ResearchAssistantError):
 
 class PDFProcessingError(ResearchAssistantError):
     """Raised when PDF parsing cannot be initialized."""
+
+
+class AgentLoopError(ResearchAssistantError):
+    """Raised when the ReAct agent cannot complete its loop safely."""

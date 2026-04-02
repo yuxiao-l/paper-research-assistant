@@ -172,6 +172,7 @@ def search_papers(
     per_keyword: int,
     settings: Settings,
     progress_callback: ProgressCallback | None = None,
+    providers: tuple[str, ...] = ("openalex", "arxiv"),
 ) -> list[Paper]:
     found: list[Paper] = []
     seen_titles: set[str] = set()
@@ -180,26 +181,28 @@ def search_papers(
     for index, keyword in enumerate(keywords, start=1):
         per_source_results: list[Paper] = []
         _report(progress_callback, "search", f"正在处理检索关键词 {index}/{total_keywords}：{keyword}", current=index, total=total_keywords)
-        # per_source_results.extend(
-        #     _search_provider(
-        #         "OpenAlex",
-        #         keyword,
-        #         lambda: search_openalex(keyword, per_keyword, settings),
-        #         progress_callback,
-        #         current=index,
-        #         total=total_keywords,
-        #     )
-        # )
-        per_source_results.extend(
-            _search_provider(
-                "arXiv",
-                keyword,
-                lambda: search_arxiv(keyword, max(3, per_keyword)),
-                progress_callback,
-                current=index,
-                total=total_keywords,
+        if "openalex" in providers:
+            per_source_results.extend(
+                _search_provider(
+                    "OpenAlex",
+                    keyword,
+                    lambda: search_openalex(keyword, per_keyword, settings),
+                    progress_callback,
+                    current=index,
+                    total=total_keywords,
+                )
             )
-        )
+        if "arxiv" in providers:
+            per_source_results.extend(
+                _search_provider(
+                    "arXiv",
+                    keyword,
+                    lambda: search_arxiv(keyword, max(3, per_keyword)),
+                    progress_callback,
+                    current=index,
+                    total=total_keywords,
+                )
+            )
 
         for paper in per_source_results:
             normalized_title = paper.title.strip().lower()

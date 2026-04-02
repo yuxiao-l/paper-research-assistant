@@ -107,6 +107,7 @@ def save_result(result: ResearchResult, output_dir: str = "outputs") -> tuple[Pa
         report.extend(
             [
                 f"### {index}. {paper.title}",
+                f"- Paper ID: {paper.paper_id or 'N/A'}",
                 f"- Year: {paper.year or 'N/A'}",
                 f"- Venue: {paper.venue or 'N/A'}",
                 f"- Source: {paper.source}",
@@ -133,5 +134,18 @@ def save_result(result: ResearchResult, output_dir: str = "outputs") -> tuple[Pa
                 "",
             ]
         )
+    if result.reasoning_trace:
+        report.extend(["## ReAct Trace", ""])
+        for step in result.reasoning_trace:
+            report.extend(
+                [
+                    f"### Iteration {step.iteration}",
+                    f"- Thought: {step.thought}",
+                    f"- Action: {step.action}",
+                    f"- Action Input: {json.dumps(step.action_input, ensure_ascii=False)}",
+                    f"- Observation: {step.observation}",
+                    "",
+                ]
+            )
     md_path.write_text("\n".join(report), encoding="utf-8")
     return json_path, md_path

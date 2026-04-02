@@ -74,6 +74,19 @@ def render_progress(progress_messages: list[str]) -> None:
             st.write(f"- {message}")
 
 
+def render_trace(result) -> None:
+    st.subheader("ReAct Trace")
+    if not result.reasoning_trace:
+        st.info("No ReAct trace recorded for this run.")
+        return
+
+    for step in result.reasoning_trace:
+        with st.expander(f"Iteration {step.iteration}: {step.action}", expanded=step.iteration == 1):
+            st.write(f"**Thought**: {step.thought}")
+            st.write(f"**Action Input**: {step.action_input}")
+            st.write(f"**Observation**: {step.observation}")
+
+
 _init_state()
 
 st.title("论文调研助手")
@@ -200,6 +213,7 @@ if st.session_state.last_result is not None:
     st.markdown(result.comparison_table)
 
     render_selected_papers(result)
+    render_trace(result)
 
     if paths:
         st.subheader("结果文件")

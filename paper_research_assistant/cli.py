@@ -54,7 +54,10 @@ def main() -> None:
     print()
     print("Selected Papers:")
     for index, paper in enumerate(result.selected, start=1):
-        print(f"{index}. {paper.title} ({paper.year or 'N/A'}) [{paper.source}] score={paper.score:.3f}")
+        print(
+            f"{index}. {paper.title} [{paper.paper_id or 'N/A'}] "
+            f"({paper.year or 'N/A'}) [{paper.source}] score={paper.score:.3f}"
+        )
         print(f"   reason: {paper.reason}")
         if paper.url:
             print(f"   url: {paper.url}")
@@ -65,6 +68,13 @@ def main() -> None:
     print()
     print("Comparison Table:")
     print(result.comparison_table)
+    if result.reasoning_trace:
+        print()
+        print("ReAct Trace:")
+        for step in result.reasoning_trace:
+            print(f"- iteration {step.iteration}: {step.thought}")
+            print(f"  action={step.action} input={step.action_input}")
+            print(f"  observation={step.observation}")
     if paths:
         print()
         print(f"Saved JSON: {paths[0]}")

@@ -9,6 +9,7 @@ from typing import Any
 class Paper:
     title: str
     abstract: str
+    paper_id: str | None = None
     year: int | None = None
     venue: str | None = None
     authors: list[str] = field(default_factory=list)
@@ -60,6 +61,7 @@ class ResearchResult:
     cards: list[PaperCard]
     overview: str
     comparison_table: str
+    reasoning_trace: list["AgentTraceStep"] = field(default_factory=list)
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -70,6 +72,7 @@ class ResearchResult:
             "cards": [card.to_dict() for card in self.cards],
             "overview": self.overview,
             "comparison_table": self.comparison_table,
+            "reasoning_trace": [step.to_dict() for step in self.reasoning_trace],
         }
 
 
@@ -82,3 +85,48 @@ class ResearchProgress:
 
 
 ProgressCallback = Callable[[ResearchProgress], None]
+
+
+@dataclass
+class AgentTraceStep:
+    iteration: int
+    thought: str
+    action: str
+    action_input: dict[str, Any]
+    observation: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass
+class ResearchState:
+    task: str
+    top_n: int
+    per_keyword: int
+    max_keywords: int
+    overview_words: int
+    parse_pdf_full_text: bool
+    keywords: list[str] = field(default_factory=list)
+    candidates: list[Paper] = field(default_factory=list)
+    selected: list[Paper] = field(default_factory=list)
+    cards: list[PaperCard] = field(default_factory=list)
+    overview: str = ""
+    comparison_table: str = ""
+    search_history: list[str] = field(default_factory=list)
+    reasoning_trace: list[AgentTraceStep] = field(default_factory=list)
+    done: bool = False
+    next_paper_index: int = 1
+    seen_titles: set[str] = field(default_factory=set, repr=False)
+
+    def to_result(self) -> ResearchResult:
+        return ResearchResult(
+            task=self.task,
+            keywords=list(self.keywords),
+            candidates=list(self.candidates),
+            selected=list(self.selected),
+            cards=list(self.cards),
+            overview=self.overview,
+            comparison_table=self.comparison_table,
+            reasoning_trace=list(self.reasoning_trace),
+        )
